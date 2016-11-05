@@ -3,8 +3,8 @@
  * on IE10+.
  *
  * @author Andreas Nymark <andreas@nymark.me>
- * @license MIT License
- * @version 2
+ * @license MIT
+ * @version 3
 **/
 var merl = merl || {};
 
@@ -22,7 +22,7 @@ merl.toggle = ( function( window, document ) {
 			dataAttr: 'data-toggle',
 			selectFocus: 'input, a',
 			autoClose: true,
-			keepOpen: true
+			keepOpen: false
 		},
 		instances = [],
 		eventOpen = document.createEvent( 'Event' ),
@@ -93,10 +93,10 @@ merl.toggle = ( function( window, document ) {
 		t.parent = parent;
 		t.event = event;
 		t.handle = handle;
-		t.panel = parent.querySelector( defs.selectPanel );
+		t.panel = t.parent.querySelector( defs.selectPanel );
 		t.textDefault = handle.innerHTML;
 		t.textAlternate = alternate;
-		t.limelight = parent.querySelector( limelight );
+		t.limelight = t.parent.querySelector( limelight );
 		t.handle.addEventListener( t.event, t.handleTrigger.bind( t ) );
 		t.handleLive();
 	};
@@ -111,14 +111,15 @@ merl.toggle = ( function( window, document ) {
 		 * @method handleReset
 		**/
 		handleReset: function () {
-			if ( this.textAlternate ) this.handle.innerHTML = this.textDefault;
-			if ( this.parent.classList.contains( defs.expanded ) ) {
-				this.parent.classList.remove( defs.expanded );
-				document.dispatchEvent( eventClose );
-				this.handle.focus();
+			var t = this;
+			if ( t.textAlternate ) t.handle.innerHTML = t.textDefault;
+			if ( t.parent.classList.contains( defs.expanded ) ) {
+				t.parent.classList.remove( defs.expanded );
+				t.parent.dispatchEvent( eventClose );
+				t.handle.focus();
 			}
-			this.handle.setAttribute( 'aria-expanded', 'false' );
-			this.panel.setAttribute( 'aria-hidden', 'true' );
+			t.handle.setAttribute( 'aria-expanded', 'false' );
+			t.panel.setAttribute( 'aria-hidden', 'true' );
 		},
 
 
@@ -128,14 +129,15 @@ merl.toggle = ( function( window, document ) {
 		 * @method handleState
 		**/
 		handleState: function () {
-			if( this.parent.classList.contains( defs.expanded ) ) {
-				this.handle.setAttribute( 'aria-expanded', 'true' );
-				this.panel.setAttribute( 'aria-hidden', 'false' );
-				document.dispatchEvent( eventOpen );
+			var t = this;
+			if( t.parent.classList.contains( defs.expanded ) ) {
+				t.handle.setAttribute( 'aria-expanded', 'true' );
+				t.panel.setAttribute( 'aria-hidden', 'false' );
+				t.parent.dispatchEvent( eventOpen );
 			} else {
-				this.handle.setAttribute( 'aria-expanded', 'false' );
-				this.panel.setAttribute( 'aria-hidden', 'true' );
-				document.dispatchEvent( eventClose );
+				t.handle.setAttribute( 'aria-expanded', 'false' );
+				t.panel.setAttribute( 'aria-hidden', 'true' );
+				t.parent.dispatchEvent( eventClose );
 			}
 		},
 
@@ -148,17 +150,18 @@ merl.toggle = ( function( window, document ) {
 		 * @param {MouseEvent} evt - Mouse event
 		**/
 		handleTrigger: function ( evt ) {
-			if( this.event === defs.event ) {
-				this.parent.classList.toggle( defs.expanded );
-				this.handleState();
+			var t = this;
+			if( t.event === defs.event ) {
+				t.parent.classList.toggle( defs.expanded );
+				t.handleState();
 			}
-			if( this.limelight ) {
-				this.limelight.focus();
+			if( t.limelight ) {
+				t.limelight.focus();
 			}
-			if( this.textAlternate && this.handle.innerHTML === this.textDefault ) {
-				this.handle.innerHTML = this.textAlternate;
-			} else if( this.textAlternate && this.handle.innerHTML === this.textAlternate ) {
-				this.handle.innerHTML = this.textDefault;
+			if( t.textAlternate && t.handle.innerHTML === t.textDefault ) {
+				t.handle.innerHTML = t.textAlternate;
+			} else if( t.textAlternate && t.handle.innerHTML === t.textAlternate ) {
+				t.handle.innerHTML = t.textDefault;
 			}
 			for ( var i = 0; i < instances.length; i++ ) {
 				var toggle = instances[ i ];
@@ -176,7 +179,8 @@ merl.toggle = ( function( window, document ) {
 		 * @method handleLive
 		**/
 		handleLive: function () {
-			if ( this.textAlternate ) this.handle.setAttribute( 'aria-live', 'polite' );
+			var t = this;
+			if ( t.textAlternate ) t.handle.setAttribute( 'aria-live', 'polite' );
 		},
 	};
 
