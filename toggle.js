@@ -4,7 +4,7 @@
  *
  * @author Andreas Nymark <andreas@nymark.me>
  * @license MIT
- * @version 3
+ * @version 4
 **/
 var merl = merl || {};
 
@@ -63,6 +63,12 @@ merl.toggle = ( function( window, document ) {
 				alternate = null,
 				limelight = defs.selectFocus,
 				data = each.getAttribute( defs.dataAttr );
+
+			if ( handle.tagName !== 'BUTTON' ) {
+				var newHandle = merl.utils.changeElement( handle, 'button' );
+				handle.parentNode.replaceChild( newHandle, handle );
+				handle = newHandle;
+			}
 
 			if ( data ) {
 				var d = JSON.parse( data );
