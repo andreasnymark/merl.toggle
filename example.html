@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Toggle</title>
+	<style>
+		a {
+			display: inline-block;
+		}
+		button:focus,
+		a:focus {
+			box-shadow: 0 0 0 2px #111;
+			outline: none;
+		}
+
+		/* Toggle styles */
+		.Toggle {
+			position: relative;
+		}
+		.Toggle-panel {
+			background: #fff;
+			box-shadow: 0 5px 15px rgba( 0,0,0, .2 );
+		    visibility: hidden;
+		    height: 0;
+		    position: absolute;
+		    z-index: 1000;
+		    top: 100%; left: 0;
+		    transition: transform .2s ease-out;
+		}
+		.is-expanded .Toggle-panel {
+	        visibility: visible;
+	        height: auto;
+		}
+	</style>
+</head>
+<body>
+	<div class="Toggle" data-toggle='{"alternate": "Close panel 1"}'>
+		<button aria-haspopup="true" class="Toggle-handle" type="button">Handle</button>
+		<div aria-label="popup" aria-hidden="true" class="Toggle-panel">
+			<h1>Panel</h1>
+		</div>
+	</div>
+	<hr>
+	<div class="Toggle" data-toggle='{"alternate": "Close panel 2"}'>
+		<a aria-haspopup="true" class="Toggle-handle">Handle</a>
+		<div aria-label="popup" aria-hidden="true" class="Toggle-panel">
+			<h1>Panel</h1>
+			<ul>
+				<li><a href="example.html">Link item 1</a></li>
+				<li><a href="example.html">Link item 2</a></li>
+				<li><a href="example.html">Link item 3</a></li>
+			</ul>
+		</div>
+	</div>
+	<hr>
+	<div class="Toggle Toggle--static" data-toggle='{"alternate": "Close panel 3"}'>
+		<button aria-haspopup="true" class="Toggle-handle" type="button">Handle</button>
+		<div aria-label="popup" aria-hidden="true" class="Toggle-panel">
+			<h1>Panel</h1>
+		</div>
+	</div>
+	<hr>
+	<div class="Toggle">
+		<button aria-haspopup="true" class="Toggle-handle" type="button">Handle</button>
+		<div aria-label="popup" aria-hidden="true" class="Toggle-panel">
+			<h1>Panel</h1>
+			<button>Lorem</button>
+			<input type="text">
+		</div>
+	</div>
+	<hr>
+	<div class="Toggle" data-toggle='{"focus": ".link"}'>
+		<button aria-haspopup="true" class="Toggle-handle" type="button">Handle with link 2 focus</button>
+		<div aria-label="popup" aria-hidden="true" class="Toggle-panel">
+			<h1>Panel</h1>
+			<button>Lorem</button>
+			<input type="text">
+			<a href="#">Link 1</a>
+			<a href="#" class="link">Link 2</a>
+		</div>
+	</div>
+	<hr>
+	<div class="Toggle" data-toggle='{"focus": ".link"}'>
+		<h3><button aria-haspopup="true" class="Toggle-handle" type="button">Handle with extra markup and link 2 focus</button></h3>
+		<div class="overlay">
+			<div aria-label="popup" aria-hidden="true" class="Toggle-panel">
+				<h1>Panel</h1>
+				<button>Lorem</button>
+				<input type="text">
+				<a href="#">Link 1</a>
+				<a href="#" class="link">Link 2 (focus on display)</a>
+			</div>
+		</div>
+	</div>
+	<hr>
+    <script src="//rawgit.com/andreasnymark/merl.utils/master/utils.js"></script>
+    <script src="toggle.js"></script>
+	<script>
+		document.onreadystatechange = function () {
+			if ( document.readyState === 'interactive' ) {
+				merl.toggle.init();
+			}
+		}
+	</script>
+</body>
+</html>
