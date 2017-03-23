@@ -4,7 +4,7 @@
  *
  * @author Andreas Nymark <andreas@nymark.me>
  * @license MIT
- * @version 4
+ * @version 5
 **/
 var merl = merl || {};
 
@@ -115,17 +115,22 @@ merl.toggle = ( function( window, document ) {
 		 * Reset handle by removing expanded class and reset handle text to default.
 		 *
 		 * @method handleReset
+		 * @param skipFocus {boolean} Set true to skip focus on handle
 		**/
-		handleReset: function () {
+		handleReset: function ( skipFocus ) {
 			var t = this;
+
+			skipFocus = skipFocus || false;
+
 			if ( t.textAlternate ) t.handle.innerHTML = t.textDefault;
 			if ( t.parent.classList.contains( defs.expanded ) ) {
 				t.parent.classList.remove( defs.expanded );
+				t.handle.setAttribute( 'aria-expanded', 'false' );
+				t.panel.setAttribute( 'aria-hidden', 'true' );
 				t.parent.dispatchEvent( eventClose );
-				t.handle.focus();
+				if ( !skipFocus ) t.handle.focus();
 			}
-			t.handle.setAttribute( 'aria-expanded', 'false' );
-			t.panel.setAttribute( 'aria-hidden', 'true' );
+
 		},
 
 
@@ -172,7 +177,7 @@ merl.toggle = ( function( window, document ) {
 			for ( var i = 0; i < instances.length; i++ ) {
 				var toggle = instances[ i ];
 				if( toggle !== this && !defs.keepOpen ) {
-					toggle.handleReset();
+					toggle.handleReset( true );
 				}
 			}
 			evt.preventDefault();
