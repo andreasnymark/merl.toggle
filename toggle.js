@@ -4,7 +4,7 @@
  *
  * @author Andreas Nymark <andreas@nymark.me>
  * @license MIT
- * @version 5
+ * @version 6
 **/
 var merl = merl || {};
 
@@ -22,7 +22,13 @@ merl.toggle = ( function( window, document ) {
 			dataAttr: 'data-toggle',
 			selectFocus: 'input, a',
 			autoClose: true,
-			keepOpen: false
+			keepOpen: false,
+			class: {
+				top: false,
+				left: false,
+				right: 'Toggle-panel--right',
+				bottom: 'Toggle-panel--up',
+			}
 		},
 		instances = [],
 		eventOpen = document.createEvent( 'Event' ),
@@ -56,7 +62,7 @@ merl.toggle = ( function( window, document ) {
 	 * @method setup
 	**/
 	var setup = function() {
-		for ( var i = 0; i < defs.all.length; i++ ) {
+		for ( var i = 0, len = defs.all.length; i < len; i++ ) {
 			var each = defs.all[ i ],
 				handle = each.querySelector( defs.selectHandle ),
 				event = defs.event,
@@ -105,6 +111,7 @@ merl.toggle = ( function( window, document ) {
 		t.limelight = t.parent.querySelector( limelight );
 		t.handle.addEventListener( t.event, t.handleTrigger.bind( t ) );
 		t.handleLive();
+		t.panelPosition();
 	};
 
 
@@ -115,19 +122,18 @@ merl.toggle = ( function( window, document ) {
 		 * Reset handle by removing expanded class and reset handle text to default.
 		 *
 		 * @method handleReset
-		 * @param skipFocus {boolean} Set true to skip focus on handle
+		 * @param {boolean} skipFocus - true to skip focus on handle
 		**/
 		handleReset: function ( skipFocus ) {
 			var t = this;
-
 			skipFocus = skipFocus || false;
 
 			if ( t.textAlternate ) t.handle.innerHTML = t.textDefault;
 			if ( t.parent.classList.contains( defs.expanded ) ) {
+				t.parent.dispatchEvent( eventClose );
 				t.parent.classList.remove( defs.expanded );
 				t.handle.setAttribute( 'aria-expanded', 'false' );
 				t.panel.setAttribute( 'aria-hidden', 'true' );
-				t.parent.dispatchEvent( eventClose );
 				if ( !skipFocus ) t.handle.focus();
 			}
 
@@ -162,25 +168,42 @@ merl.toggle = ( function( window, document ) {
 		**/
 		handleTrigger: function ( evt ) {
 			var t = this;
-			if( t.event === defs.event ) {
+			if ( t.event === defs.event ) {
 				t.parent.classList.toggle( defs.expanded );
 				t.handleState();
 			}
-			if( t.limelight ) {
+			if ( t.limelight ) {
 				t.limelight.focus();
 			}
-			if( t.textAlternate && t.handle.innerHTML === t.textDefault ) {
+			if ( t.textAlternate && t.handle.innerHTML === t.textDefault ) {
 				t.handle.innerHTML = t.textAlternate;
 			} else if( t.textAlternate && t.handle.innerHTML === t.textAlternate ) {
 				t.handle.innerHTML = t.textDefault;
 			}
-			for ( var i = 0; i < instances.length; i++ ) {
+			for ( var i = 0, len = instances.length; i < len; i++ ) {
 				var toggle = instances[ i ];
-				if( toggle !== this && !defs.keepOpen ) {
+				if ( toggle !== this && !defs.keepOpen ) {
 					toggle.handleReset( true );
 				}
 			}
 			evt.preventDefault();
+		},
+
+
+		/**
+		 * Add class if panel goes outside of viewport.
+		 *
+		 * @method panelPosition
+		**/
+		panelPosition: function () {
+			var t = this,
+				o = inViewport( t.panel ),
+				p = t.panel.classList;
+
+			if ( !o.top && defs.class.top ) p.add( 'off-top' );
+			if ( !o.left && defs.class.left ) p.add( 'off-left' );
+			if ( !o.right && defs.class.right ) p.add( defs.class.right );
+			if ( !o.bottom && defs.class.bottom ) p.add( defs.class.bottom );
 		},
 
 
@@ -203,9 +226,9 @@ merl.toggle = ( function( window, document ) {
 	 * @param {MouseEvent} evt - Mouse event
 	**/
 	var handleKill = function ( evt ) {
-		for ( var i = 0; i < instances.length; i++ ) {
+		for ( var i = 0, len = instances.length; i < len; i++ ) {
 			var toggle = instances[ i ];
-			if( !toggle.parent.contains( evt.target ) && defs.autoClose && !defs.keepOpen ) {
+			if ( !toggle.parent.contains( evt.target ) && defs.autoClose && !defs.keepOpen ) {
 				toggle.handleReset();
 			}
 		}
@@ -219,7 +242,7 @@ merl.toggle = ( function( window, document ) {
 	 * @param {MouseEvent} evt - Mouse event
 	**/
 	var closeAllToggles = function ( evt ) {
-		for ( var i = 0; i < instances.length; i++ ) {
+		for ( var i = 0, len = instances.length; i < len; i++ ) {
 			var toggle = instances[ i ];
 			toggle.handleReset();
 		}
@@ -236,6 +259,24 @@ merl.toggle = ( function( window, document ) {
 		if ( evt.keyCode === 27 ) {
 			closeAllToggles();
 		}
+	};
+
+
+	/**
+	 * Checks if element is in the viewport. Returns boolean for each edge.
+	 *
+	 * @method inViewport
+	 * @param {HTMLElement} elem - Element
+	 * @return {Object} boolean for top, right, bottom, and left.
+	**/
+	var inViewport = function ( elem ) {
+	    elem = elem.getBoundingClientRect();
+		return {
+			top: ( elem.top >= 0 ),
+			right: ( elem.right <= ( window.innerWidth || document.documentElement.clientWidth ) ),
+			bottom: ( elem.bottom <= (window.innerHeight || document.documentElement.clientHeight ) ),
+			left: ( elem.left >= 0 ),
+		};
 	};
 
 
