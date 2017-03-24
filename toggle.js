@@ -14,7 +14,7 @@ merl.toggle = ( function( window, document ) {
 
 	var defs = {
 			all: [],
-			event: 'click',
+			evt: 'click',
 			selectElem: '.Toggle',
 			selectHandle: '.Toggle-handle',
 			selectPanel: '.Toggle-panel',
@@ -65,9 +65,10 @@ merl.toggle = ( function( window, document ) {
 		for ( var i = 0, len = defs.all.length; i < len; i++ ) {
 			var each = defs.all[ i ],
 				handle = each.querySelector( defs.selectHandle ),
-				event = defs.event,
+				evt = defs.evt,
 				alternate = null,
 				limelight = defs.selectFocus,
+				keepOpen = defs.keepOpen,
 				data = each.getAttribute( defs.dataAttr );
 
 			if ( handle.tagName !== 'BUTTON' ) {
@@ -78,15 +79,15 @@ merl.toggle = ( function( window, document ) {
 
 			if ( data ) {
 				var d = JSON.parse( data );
-				if( d.event ) event = d.event;
-				if( d.handle ) handle = d.handle;
-				if( d.alternate ) alternate = d.alternate;
-				if( d.focus ) limelight = d.focus;
+				if ( d.evt ) evt = d.evt;
+				if ( d.focus ) limelight = d.focus;
+				if ( d.handle ) handle = d.handle;
+				if ( d.keepOpen ) keepOpen = d.keepOpen;
+				if ( d.alternate ) alternate = d.alternate;
 			}
-
-			instances.push( new Toggle( each, event, handle, alternate, limelight ));
+			instances.push( new Toggle( each, evt, handle, alternate, limelight, keepOpen ));
 		}
-		document.addEventListener( defs.event, handleKill );
+		document.addEventListener( defs.evt, handleKill );
 	};
 
 
@@ -95,21 +96,23 @@ merl.toggle = ( function( window, document ) {
 	 *
 	 * @constructor Toggle
 	 * @param {HTMLElement} parent -
-	 * @param {MouseEvent} event - Event on handle
+	 * @param {MouseEvent} evt - Event on handle
 	 * @param {HTMLElement} handle - Handler of toggle
 	 * @param {String} alternate - Alternative text when toggle is expanded
 	 * @param {String} limelight - Element to focus on when panel is visible
+	 * @param {Boolean} keepOpen - If panel should be kept open
 	**/
-	var Toggle = function ( parent, event, handle, alternate, limelight ) {
+	var Toggle = function ( parent, evt, handle, alternate, limelight, keepOpen ) {
 		var t = this;
+		t.evt = evt;
 		t.parent = parent;
-		t.event = event;
 		t.handle = handle;
+		t.keepOpen = keepOpen;
 		t.panel = t.parent.querySelector( defs.selectPanel );
+		t.limelight = t.parent.querySelector( limelight );
 		t.textDefault = handle.innerHTML;
 		t.textAlternate = alternate;
-		t.limelight = t.parent.querySelector( limelight );
-		t.handle.addEventListener( t.event, t.handleTrigger.bind( t ) );
+		t.handle.addEventListener( t.evt, t.handleTrigger.bind( t ) );
 		t.handleLive();
 		t.panelPosition();
 	};
@@ -168,7 +171,7 @@ merl.toggle = ( function( window, document ) {
 		**/
 		handleTrigger: function ( evt ) {
 			var t = this;
-			if ( t.event === defs.event ) {
+			if ( t.evt === defs.evt ) {
 				t.parent.classList.toggle( defs.expanded );
 				t.handleState();
 			}
@@ -182,7 +185,7 @@ merl.toggle = ( function( window, document ) {
 			}
 			for ( var i = 0, len = instances.length; i < len; i++ ) {
 				var toggle = instances[ i ];
-				if ( toggle !== this && !defs.keepOpen ) {
+				if ( toggle !== this && !toggle.keepOpen ) {
 					toggle.handleReset( true );
 				}
 			}
@@ -228,7 +231,7 @@ merl.toggle = ( function( window, document ) {
 	var handleKill = function ( evt ) {
 		for ( var i = 0, len = instances.length; i < len; i++ ) {
 			var toggle = instances[ i ];
-			if ( !toggle.parent.contains( evt.target ) && defs.autoClose && !defs.keepOpen ) {
+			if ( !toggle.parent.contains( evt.target ) && defs.autoClose && !toggle.keepOpen ) {
 				toggle.handleReset();
 			}
 		}
