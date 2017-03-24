@@ -23,7 +23,7 @@ merl.toggle = ( function( window, document ) {
 			selectFocus: 'input, a',
 			autoClose: true,
 			keepOpen: false,
-			class: {
+			classPosition: {
 				top: false,
 				left: false,
 				right: 'Toggle-panel--right',
@@ -201,12 +201,13 @@ merl.toggle = ( function( window, document ) {
 		panelPosition: function () {
 			var t = this,
 				o = inViewport( t.panel ),
-				p = t.panel.classList;
+				p = t.panel.classList,
+				dcp = defs.classPosition;
 
-			if ( !o.top && defs.class.top ) p.add( 'off-top' );
-			if ( !o.left && defs.class.left ) p.add( 'off-left' );
-			if ( !o.right && defs.class.right ) p.add( defs.class.right );
-			if ( !o.bottom && defs.class.bottom ) p.add( defs.class.bottom );
+			if ( !o.top && dcp.top ) p.add( dcp.top );
+			if ( !o.left && dcp.left ) p.add( dcp.left );
+			if ( !o.right && dcp.right ) p.add( dcp.right );
+			if ( !o.bottom && dcp.bottom ) p.add( dcp.bottom );
 		},
 
 
