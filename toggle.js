@@ -4,7 +4,7 @@
  *
  * @author Andreas Nymark <andreas@nymark.me>
  * @license MIT
- * @version 6
+ * @version 7
 **/
 var merl = merl || {};
 
