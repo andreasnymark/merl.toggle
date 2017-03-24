@@ -12,7 +12,9 @@
 			box-shadow: 0 0 0 2px #111;
 			outline: none;
 		}
-
+		p {
+			max-width: 400px;
+		}
 		/* Toggle styles */
 		.Toggle {
 			position: relative;
@@ -26,10 +28,25 @@
 		    z-index: 1000;
 		    top: 100%; left: 0;
 		    transition: transform .2s ease-out;
+			overflow: hidden;
+			min-width: 200px;
 		}
 		.is-expanded .Toggle-panel {
 	        visibility: visible;
 	        height: auto;
+		}
+		.Toggle-panel--up {
+			top: auto;
+			bottom: 100%;
+		}
+		.Toggle-panel--right {
+			left: auto;
+			right: 0;
+		}
+		.Toggle--static .Toggle-panel {
+			position: static;
+			overflow: hidden;
+
 		}
 	</style>
 </head>
@@ -41,7 +58,7 @@
 		</div>
 	</div>
 	<hr>
-	<div class="Toggle" data-toggle='{"alternate": "Close panel 2"}'>
+	<div class="Toggle" style="float:right" data-toggle='{"alternate": "Close panel 2"}'>
 		<a aria-haspopup="true" class="Toggle-handle">Handle</a>
 		<div aria-label="popup" aria-hidden="true" class="Toggle-panel">
 			<h1>Panel</h1>
@@ -53,7 +70,7 @@
 		</div>
 	</div>
 	<hr>
-	<div class="Toggle Toggle--static" data-toggle='{"alternate": "Close panel 3"}'>
+	<div class="Toggle Toggle--static" data-toggle='{"alternate": "Close panel 3", "keepOpen": true}'>
 		<button aria-haspopup="true" class="Toggle-handle" type="button">Handle</button>
 		<div aria-label="popup" aria-hidden="true" class="Toggle-panel">
 			<h1>Panel</h1>
@@ -80,19 +97,29 @@
 		</div>
 	</div>
 	<hr>
+	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor architecto officia, assumenda adipisci dolorem. Accusamus eveniet eligendi deleniti nam laboriosam eaque consectetur officia. Libero sit tempora necessitatibus quos, explicabo ratione.</p>
+	<p>Ipsum dolor sit amet, consectetur adipisicing elit. Reprehenderit beatae quos aperiam officiis, delectus veritatis, dicta natus facilis vel fuga culpa, totam, ex possimus excepturi sed! Unde, molestiae facere distinctio!</p>
+	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempore odio laborum quos doloremque, amet eius natus, inventore incidunt blanditiis quisquam facere enim dignissimos vero quo obcaecati id, ab fugiat voluptatibus.</p>
+	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo ea deleniti a alias eaque porro vel ratione aliquid facilis reprehenderit consequuntur magni ipsa cumque maxime, sed assumenda quisquam temporibus. Excepturi.</p>
+	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempore odio laborum quos doloremque, amet eius natus, inventore incidunt blanditiis quisquam facere enim dignissimos vero quo obcaecati id, ab fugiat voluptatibus.</p>
+	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo ea deleniti a alias eaque porro vel ratione aliquid facilis reprehenderit consequuntur magni ipsa cumque maxime, sed assumenda quisquam temporibus. Excepturi.</p>
+	<hr>
 	<div class="Toggle" data-toggle='{"focus": ".link"}'>
 		<h3><button aria-haspopup="true" class="Toggle-handle" type="button">Handle with extra markup and link 2 focus</button></h3>
-		<div class="overlay">
-			<div aria-label="popup" aria-hidden="true" class="Toggle-panel">
-				<h1>Panel</h1>
-				<button>Lorem</button>
-				<input type="text">
-				<a href="#">Link 1</a>
-				<a href="#" class="link">Link 2 (focus on display)</a>
-			</div>
+		<div aria-label="popup" aria-hidden="true" class="Toggle-panel">
+			<h1>Panel</h1>
+			<button>Lorem</button>
+			<input type="text">
+			<ul>
+				<li><a href="#">Link 1</a></li>
+				<li><a href="#" class="link">Link 2 (focus on display)</a></li>
+				<li><a href="#">Link 1</a></li>
+			</ul>
+
 		</div>
 	</div>
 	<hr>
+	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque sint deserunt, distinctio molestias dicta ratione dolorem recusandae ex aliquam suscipit explicabo animi, maxime rem rerum illo, quod eos, officia odio!</p>
     <script src="//rawgit.com/andreasnymark/merl.utils/master/utils.js"></script>
     <script src="toggle.js"></script>
 	<script>
