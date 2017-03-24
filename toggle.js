@@ -4,7 +4,7 @@
  *
  * @author Andreas Nymark <andreas@nymark.me>
  * @license MIT
- * @version 7
+ * @version 8
 **/
 var merl = merl || {};
 
@@ -114,7 +114,6 @@ merl.toggle = ( function( window, document ) {
 		t.textAlternate = alternate;
 		t.handle.addEventListener( t.evt, t.handleTrigger.bind( t ) );
 		t.handleLive();
-		t.panelPosition();
 	};
 
 
@@ -159,6 +158,7 @@ merl.toggle = ( function( window, document ) {
 				t.panel.setAttribute( 'aria-hidden', 'true' );
 				t.parent.dispatchEvent( eventClose );
 			}
+			t.panelPosition();
 		},
 
 
@@ -203,6 +203,11 @@ merl.toggle = ( function( window, document ) {
 				o = inViewport( t.panel ),
 				p = t.panel.classList,
 				dcp = defs.classPosition;
+
+			p.remove( dcp.top );
+			p.remove( dcp.left );
+			p.remove( dcp.right );
+			p.remove( dcp.bottom );
 
 			if ( !o.top && dcp.top ) p.add( dcp.top );
 			if ( !o.left && dcp.left ) p.add( dcp.left );
