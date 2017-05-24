@@ -4,7 +4,7 @@
  *
  * @author Andreas Nymark <andreas@nymark.me>
  * @license MIT
- * @version 8
+ * @version 9
 **/
 var merl = merl || {};
 
@@ -136,8 +136,10 @@ merl.toggle = ( function( window, document ) {
 				t.parent.classList.remove( defs.expanded );
 				t.handle.setAttribute( 'aria-expanded', 'false' );
 				t.panel.setAttribute( 'aria-hidden', 'true' );
+				t.resetPanelPosition();
 				if ( !skipFocus ) t.handle.focus();
 			}
+
 
 		},
 
@@ -158,7 +160,6 @@ merl.toggle = ( function( window, document ) {
 				t.panel.setAttribute( 'aria-hidden', 'true' );
 				t.parent.dispatchEvent( eventClose );
 			}
-			t.panelPosition();
 		},
 
 
@@ -174,22 +175,42 @@ merl.toggle = ( function( window, document ) {
 			if ( t.evt === defs.evt ) {
 				t.parent.classList.toggle( defs.expanded );
 				t.handleState();
+				t.resetPanelPosition();
+				t.panelPosition();
 			}
 			if ( t.limelight ) {
 				t.limelight.focus();
 			}
 			if ( t.textAlternate && t.handle.innerHTML === t.textDefault ) {
 				t.handle.innerHTML = t.textAlternate;
-			} else if( t.textAlternate && t.handle.innerHTML === t.textAlternate ) {
+			} else {
 				t.handle.innerHTML = t.textDefault;
 			}
+
 			for ( var i = 0, len = instances.length; i < len; i++ ) {
 				var toggle = instances[ i ];
 				if ( toggle !== this && !toggle.keepOpen ) {
+					toggle.resetPanelPosition();
 					toggle.handleReset( true );
 				}
 			}
 			evt.preventDefault();
+		},
+
+
+		/**
+		 * Reset other toggles and remove classes used for positioning.
+		 *
+		 * @method resetOtherToggles
+		**/
+		resetOtherToggles: function () {
+			for ( var i = 0, len = instances.length; i < len; i++ ) {
+				var toggle = instances[ i ];
+				if ( toggle !== this && !toggle.keepOpen ) {
+					toggle.resetPanelPosition();
+					toggle.handleReset( true );
+				}
+			}
 		},
 
 
@@ -204,16 +225,29 @@ merl.toggle = ( function( window, document ) {
 				p = t.panel.classList,
 				dcp = defs.classPosition;
 
-			p.remove( dcp.top );
-			p.remove( dcp.left );
-			p.remove( dcp.right );
-			p.remove( dcp.bottom );
-
 			if ( !o.top && dcp.top ) p.add( dcp.top );
 			if ( !o.left && dcp.left ) p.add( dcp.left );
 			if ( !o.right && dcp.right ) p.add( dcp.right );
 			if ( !o.bottom && dcp.bottom ) p.add( dcp.bottom );
 		},
+
+
+		/**
+		 * Remove all classes used for positioning.
+		 *
+		 * @method resetPanelPosition
+		**/
+		resetPanelPosition: function () {
+			var t = this,
+				p = t.panel.classList,
+				dcp = defs.classPosition;
+
+			p.remove( dcp.top );
+			p.remove( dcp.left );
+			p.remove( dcp.right );
+			p.remove( dcp.bottom );
+		},
+
 
 
 		/**
@@ -253,7 +287,7 @@ merl.toggle = ( function( window, document ) {
 	var closeAllToggles = function ( evt ) {
 		for ( var i = 0, len = instances.length; i < len; i++ ) {
 			var toggle = instances[ i ];
-			toggle.handleReset();
+			if ( !toggle.keepOpen ) toggle.handleReset();
 		}
 	};
 
