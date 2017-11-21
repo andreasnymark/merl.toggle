@@ -4,7 +4,7 @@
  *
  * @author Andreas Nymark <andreas@nymark.me>
  * @license MIT
- * @version 9
+ * @version 10
 **/
 var merl = merl || {};
 
@@ -113,7 +113,7 @@ merl.toggle = ( function( window, document ) {
 		t.textDefault = handle.innerHTML;
 		t.textAlternate = alternate;
 		t.handle.addEventListener( t.evt, t.handleTrigger.bind( t ) );
-		t.handleLive();
+		t.addAttr();
 	};
 
 
@@ -251,13 +251,16 @@ merl.toggle = ( function( window, document ) {
 
 
 		/**
-		 * Add ARIA if handle changes label.
+		 * Add attributes to handle and panel.
 		 *
-		 * @method handleLive
+		 * @method addAttr
 		**/
-		handleLive: function () {
+		addAttr: function () {
 			var t = this;
 			if ( t.textAlternate ) t.handle.setAttribute( 'aria-live', 'polite' );
+			t.handle.setAttribute( 'aria-haspopup', 'true' );
+			t.panel.setAttribute( 'aria-label', 'popup' );
+			t.panel.setAttribute( 'aria-hidden', 'true' );
 		},
 	};
 
